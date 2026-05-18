@@ -198,13 +198,18 @@ export function DashboardShell({
   const mainPadding = sidebarFromSm
     ? { xs: 2, sm: 3 }
     : { xs: 2, md: 3 };
+  const hasMobileTabBar = Boolean(mobileBottomNav);
   const mainPaddingBottom = sidebarFromSm
     ? {
-        xs: mobileBottomNav ? "calc(var(--agent-tab-bar-reserve, 96px) + var(--safe-bottom))" : 2,
+        xs: hasMobileTabBar
+          ? "calc(var(--agent-tab-bar-reserve, 120px) + var(--safe-bottom))"
+          : 2,
         sm: 3,
       }
     : {
-        xs: mobileBottomNav ? "calc(var(--agent-tab-bar-reserve, 96px) + var(--safe-bottom))" : 2,
+        xs: hasMobileTabBar
+          ? "calc(var(--agent-tab-bar-reserve, 120px) + var(--safe-bottom))"
+          : 2,
         md: 3,
       };
 
@@ -259,6 +264,11 @@ export function DashboardShell({
           minWidth: 0,
           minHeight: "100dvh",
           ml: contentMargin,
+          ...(hasMobileTabBar && {
+            height: { xs: "100dvh", sm: "auto" },
+            maxHeight: { xs: "100dvh", sm: "none" },
+            overflow: { xs: "hidden", sm: "visible" },
+          }),
         }}
       >
         <Sheet
@@ -307,9 +317,14 @@ export function DashboardShell({
           component="main"
           sx={{
             flex: 1,
+            minHeight: 0,
             p: mainPadding,
             pb: mainPaddingBottom,
             overflow: "auto",
+            WebkitOverflowScrolling: "touch",
+            scrollPaddingBottom: hasMobileTabBar
+              ? "calc(var(--agent-tab-bar-reserve, 120px) + var(--safe-bottom))"
+              : undefined,
           }}
         >
           {children}

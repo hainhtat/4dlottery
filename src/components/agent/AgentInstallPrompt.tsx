@@ -8,6 +8,10 @@ import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import IconButton from "@mui/joy/IconButton";
 import { createClient } from "@/lib/supabase/client";
 import { useT } from "@/components/providers/LocaleProvider";
+import {
+  AgentInstallPromptGuide,
+  type InstallGuideVariant,
+} from "@/components/agent/AgentInstallPromptGuide";
 
 /** Per browser tab session only — not persisted across logins or new visits. */
 const DISMISS_KEY = "agent-pwa-install-dismissed";
@@ -17,7 +21,7 @@ interface BeforeInstallPromptEvent extends Event {
   userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
 }
 
-type PromptMode = "native" | "ios" | "android" | "desktop";
+type PromptMode = "native" | InstallGuideVariant;
 
 function isStandalone(): boolean {
   if (typeof window === "undefined") return false;
@@ -122,14 +126,7 @@ export function AgentInstallPrompt() {
   if (!mounted || hidden || isStandalone()) return null;
 
   const mode = resolveMode(deferred);
-  const messageKey =
-    mode === "native"
-      ? "agent.pwa.installPrompt"
-      : mode === "ios"
-        ? "agent.pwa.iosHint"
-        : mode === "android"
-          ? "agent.pwa.androidHint"
-          : "agent.pwa.desktopHint";
+  const isNative = mode === "native";
 
   async function handleInstall() {
     if (!deferred) return;
@@ -150,18 +147,27 @@ export function AgentInstallPrompt() {
       variant="soft"
       sx={{ mb: 2 }}
       endDecorator={
-        <IconButton size="sm" variant="plain" onClick={handleDismiss} aria-label="Close">
+        <IconButton
+          size="sm"
+          variant="plain"
+          onClick={handleDismiss}
+          aria-label={t("agent.pwa.dismiss")}
+        >
           <CloseRoundedIcon />
         </IconButton>
       }
     >
-      <Typography level="body-sm" sx={{ mb: mode === "native" ? 1 : 0 }}>
-        {t(messageKey)}
-      </Typography>
-      {mode === "native" && (
-        <Button size="sm" variant="solid" onClick={() => void handleInstall()}>
-          {t("agent.pwa.installButton")}
-        </Button>
+      {isNative ? (
+        <>
+          <Typography level="body-sm" sx={{ mb: 1 }}>
+            {t("agent.pwa.intro")}
+          </Typography>
+          <Button size="sm" variant="solid" onClick={() => void handleInstall()}>
+            {t("agent.pwa.installButton")}
+          </Button>
+        </>
+      ) : (
+        <AgentInstallPromptGuide variant={mode} />
       )}
     </Alert>
   );

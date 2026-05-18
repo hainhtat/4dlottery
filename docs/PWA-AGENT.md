@@ -11,8 +11,8 @@ Agents use the **same web app** installed to the home screen. No separate native
 
 An in-app banner on agent pages explains how to install:
 
-- **Install app** button when Chrome fires `beforeinstallprompt` (common on Android).
-- **Manual instructions** on desktop browser and iOS (menu / Share → Add to Home Screen).
+- **Add to Home Screen** button when Chrome fires `beforeinstallprompt` (common on Android).
+- **Icon steps** on iOS (Share → Add to Home Screen), Android (Menu → Add to Home Screen), and desktop — step labels match the English text on most phones.
 
 Dismiss hides the banner for the **current browser tab session** only (not in the installed PWA). It shows again on the next login or when you open the site in a new tab/window.
 

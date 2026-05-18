@@ -23,7 +23,10 @@ const SHORT_LABEL_KEYS: Record<string, string> = {
 
 const TAB_BAR_HEIGHT = 64;
 const FAB_SIZE = 58;
+/** Space above the pill so the center FAB can sit in the notch. */
 const FAB_LIFT = 22;
+/** Extra clearance so labels / FAB shadow are not covered by page content. */
+const CONTENT_CLEARANCE_BUFFER = 28;
 
 function NavTab({
   href,
@@ -185,5 +188,9 @@ export function AgentMobileBottomNav() {
   );
 }
 
-/** Total vertical space reserved above safe area for the floating tab bar + FAB. */
-export const AGENT_MOBILE_TAB_BAR_RESERVE = TAB_BAR_HEIGHT + FAB_LIFT + 12;
+/**
+ * Padding for scrollable main content (above `env(safe-area-inset-bottom)`).
+ * Stack: FAB lift + pill bar + half FAB above pill + buffer for labels/shadow.
+ */
+export const AGENT_MOBILE_TAB_BAR_RESERVE =
+  FAB_LIFT + TAB_BAR_HEIGHT + Math.ceil(FAB_SIZE / 2) + CONTENT_CLEARANCE_BUFFER;

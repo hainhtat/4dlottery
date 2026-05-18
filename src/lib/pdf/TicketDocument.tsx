@@ -7,6 +7,7 @@ import {
   Image,
 } from "@react-pdf/renderer";
 import { formatGrandPrize } from "./format-prize";
+import { TICKET_QR_DISPLAY_PX } from "./ticket-dimensions";
 
 const gold = "#c9a227";
 const navy = "#0f172a";
@@ -126,8 +127,8 @@ const styles = StyleSheet.create({
     paddingTop: 6,
   },
   qr: {
-    width: 72,
-    height: 72,
+    width: TICKET_QR_DISPLAY_PX,
+    height: TICKET_QR_DISPLAY_PX,
     marginBottom: 4,
   },
   verifyHint: {

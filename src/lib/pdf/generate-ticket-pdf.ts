@@ -6,7 +6,11 @@ import {
   releasePdfBrowser,
 } from "./launch-browser";
 import { renderTicketsHtml } from "./render-ticket-html";
-import { TICKET_HEIGHT_PX, TICKET_WIDTH_PX } from "./ticket-dimensions";
+import {
+  TICKET_HEIGHT_PX,
+  TICKET_QR_GENERATE_PX,
+  TICKET_WIDTH_PX,
+} from "./ticket-dimensions";
 import type { TicketPdfData } from "./ticket-pdf-data";
 
 export type { TicketPdfData } from "./ticket-pdf-data";
@@ -26,9 +30,14 @@ export async function generateTicketPng(ticket: TicketPdfData): Promise<Buffer> 
     await page.setContent(html, { waitUntil: "domcontentloaded", timeout: 15_000 });
     await page.evaluate(() => document.fonts.ready);
 
+    const ticketPage = await page.$(".ticket-page");
+    const clip = ticketPage
+      ? await ticketPage.boundingBox()
+      : { x: 0, y: 0, width: TICKET_WIDTH_PX, height: TICKET_HEIGHT_PX };
+
     const screenshot = await page.screenshot({
       type: "png",
-      fullPage: true,
+      clip: clip ?? { x: 0, y: 0, width: TICKET_WIDTH_PX, height: TICKET_HEIGHT_PX },
       omitBackground: false,
     });
 
@@ -46,6 +55,7 @@ export async function generateTicketPdf(tickets: TicketPdfData[]): Promise<Buffe
   }
 
   const html = renderTicketsHtml(tickets);
+  const pageCount = tickets.length;
   await enterPdfRenderSlot();
   const browser = await acquirePdfBrowser();
   const page = await browser.newPage();
@@ -53,7 +63,7 @@ export async function generateTicketPdf(tickets: TicketPdfData[]): Promise<Buffe
   try {
     await page.setViewport({
       width: TICKET_WIDTH_PX,
-      height: TICKET_HEIGHT_PX,
+      height: TICKET_HEIGHT_PX * pageCount,
       deviceScaleFactor: 2,
     });
     await page.setContent(html, { waitUntil: "domcontentloaded", timeout: 15_000 });
@@ -78,8 +88,9 @@ export async function generateTicketPdf(tickets: TicketPdfData[]): Promise<Buffe
 
 export async function buildQrDataUrl(url: string): Promise<string> {
   return QRCode.toDataURL(url, {
-    margin: 1,
-    width: 160,
+    margin: 2,
+    width: TICKET_QR_GENERATE_PX,
+    errorCorrectionLevel: "M",
     color: { dark: "#0f172a", light: "#ffffff" },
   });
 }

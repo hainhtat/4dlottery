@@ -18,9 +18,12 @@ export function AgentPortalShell({ children }: { children: React.ReactNode }) {
     <AgentRefreshProvider>
       <AgentLiveSync />
       <Box
+        className="agent-app-shell"
         sx={{
           "--agent-tab-bar-reserve": `${AGENT_MOBILE_TAB_BAR_RESERVE}px`,
           minHeight: "100dvh",
+          height: { xs: "100dvh", sm: "auto" },
+          overflow: { xs: "hidden", sm: "visible" },
         }}
       >
         <DashboardShell

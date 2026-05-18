@@ -4,7 +4,11 @@ import { formatGrandPrize } from "./format-prize";
 import { formatTicketSerial } from "./format-ticket-number";
 import { getTicketFontFaceCss } from "./embed-fonts";
 import { formatTicketSecurityId } from "./pdf-fixed-copy";
-import { TICKET_HEIGHT_PX, TICKET_WIDTH_PX } from "./ticket-dimensions";
+import {
+  TICKET_HEIGHT_PX,
+  TICKET_QR_DISPLAY_PX,
+  TICKET_WIDTH_PX,
+} from "./ticket-dimensions";
 import type { TicketPdfData } from "./ticket-pdf-data";
 
 const METALLIC =
@@ -84,7 +88,7 @@ function renderTicketPage(ticket: TicketPdfData, isLast: boolean): string {
           <div class="details-grid">${detailRows.join("")}</div>
           <footer class="ticket-footer">
             <div class="qr-frame metallic-border-box">
-              <img src="${ticket.qrDataUrl}" alt="QR" width="76" height="76" />
+              <img src="${ticket.qrDataUrl}" alt="QR" width="${TICKET_QR_DISPLAY_PX}" height="${TICKET_QR_DISPLAY_PX}" />
             </div>
             <p class="verify-hint">${escapeHtml(labels.scanVerify)}</p>
             <p class="footer-id">${escapeHtml(ticketIdLine)}</p>
@@ -172,6 +176,8 @@ const TICKET_CSS = `
     height: var(--ticket-h);
     max-height: var(--ticket-h);
     overflow: hidden;
+    page-break-inside: avoid;
+    break-inside: avoid;
     page-break-after: always;
     break-after: page;
     background: var(--page-bg);
@@ -198,7 +204,7 @@ const TICKET_CSS = `
     position: relative;
     width: 100%;
     height: 100%;
-    padding: 22px 24px 20px;
+    padding: 18px 22px 16px;
     background: linear-gradient(135deg, #0B1325 0%, #050814 100%);
     border: 2px solid rgba(191, 149, 63, 0.45);
     outline: 1px solid rgba(191, 149, 63, 0.25);
@@ -230,7 +236,7 @@ const TICKET_CSS = `
     align-items: center;
     text-align: center;
     width: 100%;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
     flex-shrink: 0;
   }
   .brand-title {
@@ -243,7 +249,7 @@ const TICKET_CSS = `
     white-space: nowrap;
     width: 100%;
     color: #f0e4b8;
-    margin-bottom: 9px;
+    margin-bottom: 7px;
   }
   .official-line {
     font-family: 'Padauk', sans-serif;
@@ -251,7 +257,7 @@ const TICKET_CSS = `
     font-weight: 500;
     line-height: 1.45;
     max-width: 100%;
-    margin-bottom: 7px;
+    margin-bottom: 5px;
     color: rgba(255, 255, 255, 0.92);
   }
   .official-id {
@@ -312,13 +318,13 @@ const TICKET_CSS = `
   }
   .prize-box {
     border: 1px solid rgba(191, 149, 63, 0.65);
-    padding: 12px 10px 10px;
-    margin-bottom: 10px;
+    padding: 11px 8px 9px;
+    margin-bottom: 9px;
   }
   .number-box {
     border: 1px solid rgba(168, 176, 196, 0.5);
-    padding: 12px 10px 10px;
-    margin-bottom: 10px;
+    padding: 11px 8px 9px;
+    margin-bottom: 9px;
   }
   .box-label-gold {
     font-family: 'Geist Sans', 'Padauk', sans-serif;
@@ -359,7 +365,7 @@ const TICKET_CSS = `
     column-gap: 14px;
     row-gap: 7px;
     width: 100%;
-    margin-bottom: 12px;
+    margin-bottom: 0;
     flex-shrink: 0;
   }
   .detail-label {
@@ -381,7 +387,7 @@ const TICKET_CSS = `
     word-break: break-word;
   }
   .ticket-footer {
-    margin-top: auto;
+    margin-top: 14px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -390,14 +396,15 @@ const TICKET_CSS = `
   .qr-frame {
     padding: 1px;
     background: var(--metallic);
-    margin-bottom: 8px;
+    margin-bottom: 6px;
+    flex-shrink: 0;
   }
   .qr-frame img {
     display: block;
-    width: 76px;
-    height: 76px;
+    width: ${TICKET_QR_DISPLAY_PX}px;
+    height: ${TICKET_QR_DISPLAY_PX}px;
     background: #ffffff;
-    padding: 5px;
+    padding: 4px;
   }
   .verify-hint {
     font-family: 'Padauk', sans-serif;
@@ -405,8 +412,8 @@ const TICKET_CSS = `
     font-weight: 500;
     color: rgba(255, 255, 255, 0.88);
     text-align: center;
-    line-height: 1.35;
-    margin-bottom: 6px;
+    line-height: 1.3;
+    margin-bottom: 4px;
     max-width: 100%;
   }
   .footer-id {
@@ -416,7 +423,7 @@ const TICKET_CSS = `
     color: rgba(168, 176, 196, 0.65);
     letter-spacing: 0.08em;
     text-align: center;
-    margin-bottom: 6px;
+    margin-bottom: 4px;
   }
   .security-footer {
     font-family: 'Padauk', 'Geist Sans', sans-serif;

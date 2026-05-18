@@ -19,14 +19,44 @@ body.joy-ui-body {
   background: #f4f6f9;
 }
 
+/* Agent PWA: single scroll container inside the shell (not the document body). */
+@media (max-width: 599.98px) {
+  .agent-app-shell {
+    height: 100dvh;
+    max-height: 100dvh;
+    overflow: hidden;
+  }
+}
+
 /* html5-qrcode scanner (agent verify tab) */
-[id^="agent-qr-"] video {
+.agent-qr-mount video {
   width: 100% !important;
   height: auto !important;
   border-radius: 12px;
   object-fit: cover;
 }
 
-[id^="agent-qr-"] img {
+.agent-qr-mount img {
   display: none;
+}
+
+.agent-qr-mount--fullscreen,
+.agent-qr-mount--fullscreen video {
+  border-radius: 0 !important;
+}
+
+.agent-qr-mount--fullscreen {
+  min-height: 100%;
+  height: 100%;
+}
+
+.agent-qr-mount--fullscreen video {
+  height: 100% !important;
+  min-height: 100%;
+  object-fit: cover;
+}
+
+.agent-qr-scanner--fullscreen .agent-qr-mount {
+  position: absolute;
+  inset: 0;
 }

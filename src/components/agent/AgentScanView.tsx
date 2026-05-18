@@ -5,14 +5,10 @@ import Box from "@mui/joy/Box";
 import Typography from "@mui/joy/Typography";
 import Card from "@mui/joy/Card";
 import Button from "@mui/joy/Button";
-import Input from "@mui/joy/Input";
-import FormControl from "@mui/joy/FormControl";
-import FormLabel from "@mui/joy/FormLabel";
-import Alert from "@mui/joy/Alert";
 import Stack from "@mui/joy/Stack";
 import { AGENT_SCAN_NAV_ITEM } from "@/components/agent/agentNav";
 import { toast } from "react-toastify";
-import { AgentQrScanner } from "@/components/agent/AgentQrScanner";
+import { AgentScanCameraView } from "@/components/agent/AgentScanCameraView";
 import { VerifyTicketResultPanel } from "@/components/verify/VerifyTicketResultPanel";
 import {
   fetchVerifyResult,
@@ -89,6 +85,61 @@ export function AgentScanView() {
     void runVerify(parsed);
   }
 
+  if (phase === "camera") {
+    return (
+      <>
+        <Box
+          sx={{
+            display: { xs: "none", sm: "block" },
+            width: "100%",
+            maxWidth: 480,
+            mx: "auto",
+            mb: 2,
+          }}
+        >
+          <Stack
+            direction="row"
+            spacing={1}
+            alignItems="center"
+            sx={{ mb: 1, color: "primary.600", "& svg": { fontSize: 28 } }}
+          >
+            <ScanIcon />
+            <Typography level="h3">{t("agent.scan.title")}</Typography>
+          </Stack>
+          <Typography level="body-sm" sx={{ color: "text.tertiary" }}>
+            {t("agent.scan.subtitle")}
+          </Typography>
+        </Box>
+
+        <Box sx={{ display: { xs: "none", sm: "block" }, maxWidth: 480, mx: "auto", width: "100%" }}>
+          <Card variant="outlined" sx={{ p: 0, overflow: "hidden" }}>
+            <AgentScanCameraView
+              active
+              cameraError={cameraError}
+              onScan={handleDecoded}
+              onError={(msg) => setCameraError(msg)}
+              manualUrl={manualUrl}
+              onManualUrlChange={setManualUrl}
+              onManualVerify={handleManualVerify}
+            />
+          </Card>
+        </Box>
+
+        <Box sx={{ display: { xs: "block", sm: "none" } }}>
+          <AgentScanCameraView
+            active
+            cameraError={cameraError}
+            onScan={handleDecoded}
+            onError={(msg) => setCameraError(msg)}
+            manualUrl={manualUrl}
+            onManualUrlChange={setManualUrl}
+            onManualVerify={handleManualVerify}
+          />
+        </Box>
+      </>
+    );
+  }
+
   return (
     <Box sx={{ width: "100%", maxWidth: 480, mx: "auto" }}>
       <Stack
@@ -100,58 +151,20 @@ export function AgentScanView() {
         <ScanIcon />
         <Typography level="h3">{t("agent.scan.title")}</Typography>
       </Stack>
-      <Typography level="body-sm" sx={{ color: "text.tertiary", mb: 2 }}>
-        {t("agent.scan.subtitle")}
-      </Typography>
 
-      {phase === "camera" && (
-        <Stack spacing={2}>
-          {cameraError && (
-            <Alert color="warning" variant="soft">
-              {cameraError}
-            </Alert>
-          )}
-          <Card variant="outlined" sx={{ p: 1.5, overflow: "hidden" }}>
-            <AgentQrScanner
-              active={phase === "camera"}
-              onScan={handleDecoded}
-              onError={(msg) => setCameraError(msg)}
-            />
-          </Card>
-          <Typography level="body-xs" sx={{ color: "text.tertiary", textAlign: "center" }}>
-            {t("agent.scan.hint")}
-          </Typography>
-
-          <FormControl>
-            <FormLabel>{t("agent.scan.manualLabel")}</FormLabel>
-            <Input
-              value={manualUrl}
-              onChange={(e) => setManualUrl(e.target.value)}
-              placeholder={t("agent.scan.manualPlaceholder")}
-              slotProps={{ input: { sx: { fontSize: "0.85rem" } } }}
-            />
-          </FormControl>
-          <Button variant="soft" onClick={handleManualVerify} disabled={!manualUrl.trim()}>
-            {t("agent.scan.manualSubmit")}
-          </Button>
-        </Stack>
-      )}
-
-      {phase === "result" && (
-        <Stack spacing={2}>
-          <Card variant="outlined" sx={{ p: 2 }}>
-            <VerifyTicketResultPanel
-              result={result}
-              publicId={publicId}
-              loading={loading}
-              compact
-            />
-          </Card>
-          <Button variant="solid" onClick={handleScanAgain} startDecorator={<ScanIcon />}>
-            {t("agent.scan.scanAgain")}
-          </Button>
-        </Stack>
-      )}
+      <Stack spacing={2}>
+        <Card variant="outlined" sx={{ p: 2 }}>
+          <VerifyTicketResultPanel
+            result={result}
+            publicId={publicId}
+            loading={loading}
+            compact
+          />
+        </Card>
+        <Button variant="solid" onClick={handleScanAgain} startDecorator={<ScanIcon />}>
+          {t("agent.scan.scanAgain")}
+        </Button>
+      </Stack>
     </Box>
   );
 }
