@@ -4,18 +4,18 @@ import Alert from "@mui/joy/Alert";
 import IconButton from "@mui/joy/IconButton";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import { useT } from "@/components/providers/LocaleProvider";
-
-export interface AgentNotification {
-  id: string;
-  message: string;
-}
+import {
+  formatAgentNotification,
+  notificationAlertColor,
+} from "@/lib/agent/format-notification";
+import type { AgentNotificationRow } from "@/lib/agent/notification-types";
 
 export function AgentNotificationAlerts({
   notifications,
   onDismiss,
   dismissingId,
 }: {
-  notifications: AgentNotification[];
+  notifications: AgentNotificationRow[];
   onDismiss: (id: string) => void;
   dismissingId?: string | null;
 }) {
@@ -28,7 +28,7 @@ export function AgentNotificationAlerts({
       {notifications.map((n) => (
         <Alert
           key={n.id}
-          color="success"
+          color={notificationAlertColor(n.type)}
           variant="soft"
           sx={{ mb: 2, alignItems: "flex-start" }}
           endDecorator={
@@ -38,14 +38,14 @@ export function AgentNotificationAlerts({
               color="neutral"
               disabled={dismissingId === n.id}
               onClick={() => onDismiss(n.id)}
-              aria-label={t("agent.sell.dismissNotification")}
+              aria-label={t("agent.notifications.dismiss")}
               sx={{ mt: -0.25, mr: -0.5 }}
             >
               <CloseRoundedIcon fontSize="small" />
             </IconButton>
           }
         >
-          {n.message}
+          {formatAgentNotification(n, t)}
         </Alert>
       ))}
     </>

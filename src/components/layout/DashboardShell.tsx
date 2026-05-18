@@ -200,11 +200,11 @@ export function DashboardShell({
     : { xs: 2, md: 3 };
   const mainPaddingBottom = sidebarFromSm
     ? {
-        xs: mobileBottomNav ? "calc(80px + var(--safe-bottom))" : 2,
+        xs: mobileBottomNav ? "calc(var(--agent-tab-bar-reserve, 96px) + var(--safe-bottom))" : 2,
         sm: 3,
       }
     : {
-        xs: mobileBottomNav ? "calc(80px + var(--safe-bottom))" : 2,
+        xs: mobileBottomNav ? "calc(var(--agent-tab-bar-reserve, 96px) + var(--safe-bottom))" : 2,
         md: 3,
       };
 

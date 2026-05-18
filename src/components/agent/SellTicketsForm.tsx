@@ -31,7 +31,6 @@ import {
 import { useDebouncedCallback } from "@/lib/hooks/use-debounced-callback";
 import { PremiumModalDialog } from "@/components/ui/PremiumModalDialog";
 import { AgentSettlementSummary } from "@/components/agent/AgentSettlementSummary";
-import { AgentNotificationAlerts } from "@/components/agent/AgentNotificationAlerts";
 import { useAgentRefresh } from "@/components/agent/AgentRefreshContext";
 import { formatMoneyDisplay } from "@/lib/utils/money";
 import type { Round } from "@/lib/types/database";
@@ -43,7 +42,6 @@ const MAX_NUMBERS_PER_SALE = MAX_TICKETS_PER_BATCH;
 
 interface SellPageData {
   rounds: Round[];
-  notifications: { id: string; message: string }[];
 }
 
 /** Review only — tickets are not created until the agent confirms. */
@@ -114,61 +112,25 @@ export function SellTicketsForm() {
       data: { user },
     } = await supabase.auth.getUser();
     if (!user) {
-      return { rounds: [], notifications: [] };
+      return { rounds: [] };
     }
 
-    const [roundsRes, notifRes] = await Promise.all([
-      supabase.from("rounds").select("*").eq("status", "open").order("closes_at", { ascending: true }),
-      supabase
-        .from("agent_notifications")
-        .select("id, message")
-        .eq("agent_id", user.id)
-        .is("read_at", null)
-        .order("created_at", { ascending: false })
-        .limit(5),
-    ]);
+    const roundsRes = await supabase
+      .from("rounds")
+      .select("*")
+      .eq("status", "open")
+      .order("closes_at", { ascending: true });
 
     if (roundsRes.error) throw roundsRes.error;
 
     const rounds = ((roundsRes.data ?? []) as Round[]).filter(isRoundOpen);
 
-    return {
-      rounds,
-      notifications: Array.isArray(notifRes.data) ? notifRes.data : [],
-    };
+    return { rounds };
   }, [supabase]);
 
-  const { data, loading, error, refetch, setData } = useAsyncData(fetchSellData, [refreshKey]);
-  const [dismissingNotificationId, setDismissingNotificationId] = useState<string | null>(null);
-
-  const dismissNotification = useCallback(
-    async (id: string) => {
-      setDismissingNotificationId(id);
-      const { error: dismissError } = await supabase
-        .from("agent_notifications")
-        .update({ read_at: new Date().toISOString() })
-        .eq("id", id);
-
-      setDismissingNotificationId(null);
-
-      if (dismissError) {
-        toast.error(dismissError.message);
-        return;
-      }
-
-      setData((prev) => {
-        if (!prev) return prev;
-        return {
-          ...prev,
-          notifications: prev.notifications.filter((n) => n.id !== id),
-        };
-      });
-    },
-    [supabase, setData]
-  );
+  const { data, loading, error, refetch } = useAsyncData(fetchSellData, [refreshKey]);
 
   const openRounds = data?.rounds ?? [];
-  const notifications = data?.notifications ?? [];
 
   const [roundId, setRoundId] = useState<string | null>(null);
   const [buyerName, setBuyerName] = useState("");
@@ -422,12 +384,6 @@ export function SellTicketsForm() {
   if (openRounds.length === 0) {
     return (
       <Box sx={{ width: "100%", maxWidth: 480, mx: "auto" }}>
-        <AgentNotificationAlerts
-          notifications={notifications}
-          onDismiss={dismissNotification}
-          dismissingId={dismissingNotificationId}
-        />
-
         <AgentSettlementSummary showWinnerOnMyWin />
 
         <Card variant="soft" sx={{ p: 3, textAlign: "center" }}>
@@ -444,12 +400,6 @@ export function SellTicketsForm() {
 
   return (
     <Box sx={{ width: "100%", maxWidth: 480, mx: "auto", px: { xs: 0, sm: 0 } }}>
-      <AgentNotificationAlerts
-        notifications={notifications}
-        onDismiss={dismissNotification}
-        dismissingId={dismissingNotificationId}
-      />
-
       {activeRoundId && (
         <AgentSettlementSummary
           compact

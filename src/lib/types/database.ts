@@ -2,6 +2,23 @@ export type RoundStatus = "draft" | "open" | "closed" | "drawn";
 export type TicketStatus = "active" | "voided";
 export type PaymentType = "cash" | "credit";
 
+export type AgentNotificationType =
+  | "round_open"
+  | "round_closed"
+  | "round_drawn"
+  | "draw_winner";
+
+export interface AgentNotification {
+  id: string;
+  agent_id: string;
+  round_id: string;
+  type: AgentNotificationType;
+  payload: Record<string, unknown>;
+  message: string | null;
+  read_at: string | null;
+  created_at: string;
+}
+
 export interface Profile {
   id: string;
   display_name: string;

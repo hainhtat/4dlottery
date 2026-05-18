@@ -18,3 +18,15 @@ body {
 body.joy-ui-body {
   background: #f4f6f9;
 }
+
+/* html5-qrcode scanner (agent verify tab) */
+[id^="agent-qr-"] video {
+  width: 100% !important;
+  height: auto !important;
+  border-radius: 12px;
+  object-fit: cover;
+}
+
+[id^="agent-qr-"] img {
+  display: none;
+}
