@@ -1,0 +1,26 @@
+{
+  "name": "Premium Lottery Agent",
+  "short_name": "Lottery",
+  "description": "Sell lottery tickets and view settlement",
+  "start_url": "/agent/sell",
+  "scope": "/agent",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0f172a",
+  "theme_color": "#c9a227",
+  "lang": "my",
+  "icons": [
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}
