@@ -32,7 +32,9 @@ export function AgentMobileBottomNav() {
         borderTop: "1px solid",
         borderColor: "divider",
         bgcolor: "background.surface",
-        pb: "env(safe-area-inset-bottom, 0px)",
+        pb: "var(--safe-bottom)",
+        pl: "var(--safe-left)",
+        pr: "var(--safe-right)",
       }}
     >
       <Box

@@ -199,8 +199,14 @@ export function DashboardShell({
     ? { xs: 2, sm: 3 }
     : { xs: 2, md: 3 };
   const mainPaddingBottom = sidebarFromSm
-    ? { xs: mobileBottomNav ? 10 : 2, sm: 3 }
-    : { xs: mobileBottomNav ? 10 : 2, md: 3 };
+    ? {
+        xs: mobileBottomNav ? "calc(80px + var(--safe-bottom))" : 2,
+        sm: 3,
+      }
+    : {
+        xs: mobileBottomNav ? "calc(80px + var(--safe-bottom))" : 2,
+        md: 3,
+      };
 
   return (
     <Box sx={{ minHeight: "100dvh", bgcolor: "background.body" }}>
@@ -235,6 +241,7 @@ export function DashboardShell({
             display: "flex",
             flexDirection: "column",
             bgcolor: "neutral.900",
+            pt: "var(--safe-top)",
           }}
         >
           {useAccountDrawer && renderMobileAccountDrawer ? (
@@ -257,12 +264,18 @@ export function DashboardShell({
         <Sheet
           sx={{
             display: hideCompactChrome,
+            position: "sticky",
+            top: 0,
+            zIndex: 1100,
             alignItems: "center",
             gap: 1.5,
-            px: 2,
-            py: 1.5,
+            px: { xs: "calc(16px + var(--safe-left))", sm: 2 },
+            pr: { xs: "calc(16px + var(--safe-right))", sm: 2 },
+            pt: { xs: "calc(12px + var(--safe-top))", sm: 1.5 },
+            pb: 1.5,
             borderBottom: "1px solid",
             borderColor: "divider",
+            bgcolor: "background.surface",
           }}
         >
           {useAccountDrawer ? (
