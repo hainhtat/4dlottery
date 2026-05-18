@@ -7,11 +7,14 @@ import Chip from "@mui/joy/Chip";
 import Button from "@mui/joy/Button";
 import Box from "@mui/joy/Box";
 import PrintRoundedIcon from "@mui/icons-material/PrintRounded";
+import PhotoLibraryRoundedIcon from "@mui/icons-material/PhotoLibraryRounded";
 import { formatDisplayDateTime } from "@/lib/pdf/format-datetime";
 import { downloadTicketPdf } from "@/lib/tickets/download-pdf";
+import { saveTicketImagesWithToast } from "@/lib/tickets/save-ticket-images";
 import { useLocale, useT } from "@/components/providers/LocaleProvider";
 
 export interface AgentTicketCardProps {
+  ticketId: string;
   publicId: string;
   roundName: string;
   number: string;
@@ -43,6 +46,7 @@ function Detail({ label, value, mono }: { label: string; value: string; mono?: b
 }
 
 export function AgentTicketCard({
+  ticketId,
   publicId,
   roundName,
   number,
@@ -98,17 +102,31 @@ export function AgentTicketCard({
         <Detail label={t("agent.tickets.card.issued")} value={formatDisplayDateTime(issuedAt, locale)} />
       </Stack>
 
-      {batchId && !isVoided && (
-        <Button
-          size="sm"
-          variant="soft"
-          color="primary"
-          fullWidth
-          startDecorator={<PrintRoundedIcon />}
-          onClick={() => void downloadTicketPdf(batchId)}
-        >
-          {t("agent.tickets.reprint")}
-        </Button>
+      {!isVoided && (
+        <Stack direction="row" spacing={1}>
+          <Button
+            size="sm"
+            variant="soft"
+            color="primary"
+            sx={{ flex: 1 }}
+            startDecorator={<PhotoLibraryRoundedIcon />}
+            onClick={() => void saveTicketImagesWithToast([{ id: ticketId, number }])}
+          >
+            {t("agent.tickets.saveImage")}
+          </Button>
+          {batchId && (
+            <Button
+              size="sm"
+              variant="outlined"
+              color="neutral"
+              sx={{ flex: 1 }}
+              startDecorator={<PrintRoundedIcon />}
+              onClick={() => void downloadTicketPdf(batchId)}
+            >
+              {t("agent.tickets.pdfShort")}
+            </Button>
+          )}
+        </Stack>
       )}
       {batchId && isVoided && (
         <Button size="sm" variant="soft" color="neutral" fullWidth disabled>

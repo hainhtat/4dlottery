@@ -22,7 +22,8 @@ import { toast } from "react-toastify";
 import { csrfHeaders } from "@/lib/api/csrf";
 import { createClient } from "@/lib/supabase/client";
 import { useAsyncData } from "@/lib/hooks/use-async-data";
-import { downloadTicketPdf } from "@/lib/tickets/download-pdf";
+import { SaleSuccessDialog } from "@/components/agent/SaleSuccessDialog";
+import type { TicketImageRef } from "@/lib/tickets/save-ticket-images";
 import {
   checkNumberAvailable,
   type NumberCheckStatus,
@@ -176,6 +177,10 @@ export function SellTicketsForm() {
   const [numberStatuses, setNumberStatuses] = useState<Record<number, NumberCheckStatus>>({});
   const [submitting, setSubmitting] = useState(false);
   const [pendingSale, setPendingSale] = useState<PendingSale | null>(null);
+  const [saleSuccess, setSaleSuccess] = useState<{
+    batchId: string;
+    tickets: TicketImageRef[];
+  } | null>(null);
   const [downloading, setDownloading] = useState(false);
   const checkSeqRef = useRef<Record<number, number>>({});
   const lastVerifiedRef = useRef<Record<number, string>>({});
@@ -378,8 +383,11 @@ export function SellTicketsForm() {
         return;
       }
 
-      await downloadTicketPdf(json.batchId as string);
-      toast.success(t("agent.sell.success"));
+      const issued = (json.tickets ?? []) as { id: string; number: string }[];
+      setSaleSuccess({
+        batchId: json.batchId as string,
+        tickets: issued.map((t) => ({ id: t.id, number: t.number })),
+      });
       setPendingSale(null);
       setNumberRows([""]);
       clearNumberStatuses();
@@ -735,6 +743,15 @@ export function SellTicketsForm() {
           </Stack>
         )}
       </PremiumModalDialog>
+
+      {saleSuccess && (
+        <SaleSuccessDialog
+          open
+          batchId={saleSuccess.batchId}
+          tickets={saleSuccess.tickets}
+          onClose={() => setSaleSuccess(null)}
+        />
+      )}
     </Box>
   );
 }

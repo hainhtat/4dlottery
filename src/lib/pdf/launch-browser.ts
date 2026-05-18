@@ -1,4 +1,5 @@
 import { existsSync } from "node:fs";
+import path from "node:path";
 import type { Browser } from "puppeteer-core";
 import { isPdfServerless } from "./pdf-env";
 
@@ -54,10 +55,29 @@ function findSystemChrome(): string | undefined {
   return undefined;
 }
 
+async function resolveServerlessChromePath(): Promise<string> {
+  const chromium = (await import("@sparticuz/chromium")).default;
+  if ("setGraphicsMode" in chromium && typeof chromium.setGraphicsMode !== "undefined") {
+    chromium.setGraphicsMode = false;
+  }
+
+  const binCandidates = [
+    path.join(process.cwd(), "node_modules/@sparticuz/chromium/bin"),
+    path.join("/var/task", "node_modules/@sparticuz/chromium/bin"),
+  ];
+
+  for (const binDir of binCandidates) {
+    if (existsSync(binDir)) {
+      return chromium.executablePath(binDir);
+    }
+  }
+
+  return chromium.executablePath();
+}
+
 async function resolveChromeExecutablePath(): Promise<string> {
   if (isPdfServerless()) {
-    const chromium = await import("@sparticuz/chromium");
-    return chromium.default.executablePath();
+    return resolveServerlessChromePath();
   }
 
   const system = findSystemChrome();
@@ -94,8 +114,8 @@ async function launchBrowser(): Promise<Browser> {
   };
 
   if (isPdfServerless()) {
-    const chromium = await import("@sparticuz/chromium");
-    launchOptions.args = chromium.default.args;
+    const chromium = (await import("@sparticuz/chromium")).default;
+    launchOptions.args = chromium.args;
   }
 
   return puppeteer.default.launch(launchOptions);

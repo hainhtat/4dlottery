@@ -21,7 +21,7 @@ iOS does not show the Android install banner; use Share manually.
 
 ## What works in the PWA
 
-- Sell tickets, PDF download, sold tickets list, settlement, winners, live round updates
+- Sell tickets, **save to gallery** (one PNG per ticket via share sheet), PDF download, sold tickets list, settlement, winners, live round updates
 - Myanmar / English language switch
 - Same login as browser (`/login` → agent role)
 

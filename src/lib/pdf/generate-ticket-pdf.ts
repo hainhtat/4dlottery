@@ -11,6 +11,35 @@ import type { TicketPdfData } from "./ticket-pdf-data";
 
 export type { TicketPdfData } from "./ticket-pdf-data";
 
+export async function generateTicketPng(ticket: TicketPdfData): Promise<Buffer> {
+  const html = renderTicketsHtml([ticket]);
+  await enterPdfRenderSlot();
+  const browser = await acquirePdfBrowser();
+  const page = await browser.newPage();
+
+  try {
+    await page.setViewport({
+      width: TICKET_WIDTH_PX,
+      height: TICKET_HEIGHT_PX,
+      deviceScaleFactor: 2,
+    });
+    await page.setContent(html, { waitUntil: "domcontentloaded", timeout: 15_000 });
+    await page.evaluate(() => document.fonts.ready);
+
+    const screenshot = await page.screenshot({
+      type: "png",
+      fullPage: true,
+      omitBackground: false,
+    });
+
+    return Buffer.from(screenshot);
+  } finally {
+    await page.close();
+    await releasePdfBrowser(browser);
+    leavePdfRenderSlot();
+  }
+}
+
 export async function generateTicketPdf(tickets: TicketPdfData[]): Promise<Buffer> {
   if (!tickets.length) {
     throw new Error("No tickets to render");

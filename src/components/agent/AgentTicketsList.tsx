@@ -14,7 +14,9 @@ import Box from "@mui/joy/Box";
 import IconButton from "@mui/joy/IconButton";
 import Tooltip from "@mui/joy/Tooltip";
 import PrintRoundedIcon from "@mui/icons-material/PrintRounded";
+import PhotoLibraryRoundedIcon from "@mui/icons-material/PhotoLibraryRounded";
 import { downloadTicketPdf } from "@/lib/tickets/download-pdf";
+import { saveTicketImagesWithToast } from "@/lib/tickets/save-ticket-images";
 import { createClient } from "@/lib/supabase/client";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { DataCard } from "@/components/ui/DataCard";
@@ -22,7 +24,6 @@ import { one } from "@/lib/utils/supabase-relations";
 import { ticketRoundDetail } from "@/lib/supabase/embeds";
 import { formatDisplayDateTime } from "@/lib/pdf/format-datetime";
 import { useLocale, useT } from "@/components/providers/LocaleProvider";
-import { AgentSettlementSummary } from "@/components/agent/AgentSettlementSummary";
 import { AgentTicketCard } from "@/components/agent/AgentTicketCard";
 import { useAgentRefresh } from "@/components/agent/AgentRefreshContext";
 import { fetchRoundContext, type RoundContext } from "@/lib/rounds/fetch-round-context";
@@ -200,8 +201,6 @@ export function AgentTicketsList() {
     <>
       <PageHeader title={t("agent.tickets.title")} description={filterLabel} />
 
-      <AgentSettlementSummary />
-
       <FormControl sx={{ mb: 2, width: "100%", maxWidth: { md: 280 } }}>
         <FormLabel>{t("agent.tickets.filter")}</FormLabel>
         <Select
@@ -236,6 +235,7 @@ export function AgentTicketsList() {
               {tickets.map((ticket) => (
             <AgentTicketCard
               key={ticket.id}
+              ticketId={ticket.id}
               publicId={ticket.public_id}
               roundName={one(ticket.rounds)?.name ?? "—"}
               number={ticket.number}
@@ -299,18 +299,37 @@ export function AgentTicketsList() {
                   </td>
                   <td>{formatDisplayDateTime(ticket.issued_at, locale)}</td>
                   <td>
-                    {ticket.batch_id && !isVoided ? (
-                      <Tooltip title={t("agent.tickets.reprint")} variant="soft">
-                        <IconButton
-                          size="sm"
-                          variant="soft"
-                          color="primary"
-                          aria-label={t("agent.tickets.reprint")}
-                          onClick={() => void downloadTicketPdf(ticket.batch_id!)}
-                        >
-                          <PrintRoundedIcon fontSize="small" />
-                        </IconButton>
-                      </Tooltip>
+                    {!isVoided ? (
+                      <Stack direction="row" spacing={0.5}>
+                        <Tooltip title={t("agent.tickets.saveImage")} variant="soft">
+                          <IconButton
+                            size="sm"
+                            variant="soft"
+                            color="primary"
+                            aria-label={t("agent.tickets.saveImage")}
+                            onClick={() =>
+                              void saveTicketImagesWithToast([
+                                { id: ticket.id, number: ticket.number },
+                              ])
+                            }
+                          >
+                            <PhotoLibraryRoundedIcon fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+                        {ticket.batch_id && (
+                          <Tooltip title={t("agent.tickets.reprint")} variant="soft">
+                            <IconButton
+                              size="sm"
+                              variant="outlined"
+                              color="neutral"
+                              aria-label={t("agent.tickets.reprint")}
+                              onClick={() => void downloadTicketPdf(ticket.batch_id!)}
+                            >
+                              <PrintRoundedIcon fontSize="small" />
+                            </IconButton>
+                          </Tooltip>
+                        )}
+                      </Stack>
                     ) : ticket.batch_id && isVoided ? (
                       <Tooltip title={t("agent.tickets.voidedNoPdf")} variant="soft">
                         <span>
