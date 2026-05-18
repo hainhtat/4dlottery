@@ -6,11 +6,11 @@ import Typography from "@mui/joy/Typography";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { SvgIconComponent } from "@mui/icons-material";
-import QrCodeScannerRoundedIcon from "@mui/icons-material/QrCodeScannerRounded";
 import {
   AGENT_MOBILE_NAV_LEFT,
   AGENT_MOBILE_NAV_RIGHT,
   AGENT_SCAN_HREF,
+  AGENT_SCAN_NAV_ITEM,
 } from "@/components/agent/agentNav";
 import { useT } from "@/components/providers/LocaleProvider";
 
@@ -72,6 +72,7 @@ function NavTab({
 export function AgentMobileBottomNav() {
   const pathname = usePathname() ?? "";
   const t = useT();
+  const ScanIcon = AGENT_SCAN_NAV_ITEM.icon;
   const scanSelected =
     pathname === AGENT_SCAN_HREF || pathname.startsWith(`${AGENT_SCAN_HREF}/`);
 
@@ -125,9 +126,10 @@ export function AgentMobileBottomNav() {
             border: "3px solid",
             borderColor: "background.surface",
             transition: "background-color 0.15s ease, box-shadow 0.15s ease",
+            "& svg": { fontSize: 28 },
           }}
         >
-          <QrCodeScannerRoundedIcon sx={{ fontSize: 28 }} />
+          <ScanIcon />
         </Box>
 
         <Sheet
@@ -149,14 +151,14 @@ export function AgentMobileBottomNav() {
           {AGENT_MOBILE_NAV_LEFT.map((item) => {
             const selected =
               pathname === item.href || pathname.startsWith(`${item.href}/`);
-            const Icon = item.icon;
             const shortKey = SHORT_LABEL_KEYS[item.href];
+            if (!item.icon) return null;
             return (
               <NavTab
                 key={item.href}
                 href={item.href}
                 selected={selected}
-                icon={Icon}
+                icon={item.icon}
                 label={shortKey ? t(shortKey) : t(item.labelKey)}
               />
             );
@@ -165,14 +167,14 @@ export function AgentMobileBottomNav() {
           {AGENT_MOBILE_NAV_RIGHT.map((item) => {
             const selected =
               pathname === item.href || pathname.startsWith(`${item.href}/`);
-            const Icon = item.icon;
             const shortKey = SHORT_LABEL_KEYS[item.href];
+            if (!item.icon) return null;
             return (
               <NavTab
                 key={item.href}
                 href={item.href}
                 selected={selected}
-                icon={Icon}
+                icon={item.icon}
                 label={shortKey ? t(shortKey) : t(item.labelKey)}
               />
             );

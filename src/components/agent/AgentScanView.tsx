@@ -10,7 +10,7 @@ import FormControl from "@mui/joy/FormControl";
 import FormLabel from "@mui/joy/FormLabel";
 import Alert from "@mui/joy/Alert";
 import Stack from "@mui/joy/Stack";
-import QrCodeScannerRoundedIcon from "@mui/icons-material/QrCodeScannerRounded";
+import { AGENT_SCAN_NAV_ITEM } from "@/components/agent/agentNav";
 import { toast } from "react-toastify";
 import { AgentQrScanner } from "@/components/agent/AgentQrScanner";
 import { VerifyTicketResultPanel } from "@/components/verify/VerifyTicketResultPanel";
@@ -22,6 +22,8 @@ import type { VerifyResult } from "@/lib/verify/verify-result";
 import { useT } from "@/components/providers/LocaleProvider";
 
 type ScanPhase = "camera" | "result";
+
+const ScanIcon = AGENT_SCAN_NAV_ITEM.icon;
 
 export function AgentScanView() {
   const t = useT();
@@ -89,8 +91,13 @@ export function AgentScanView() {
 
   return (
     <Box sx={{ width: "100%", maxWidth: 480, mx: "auto" }}>
-      <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 2 }}>
-        <QrCodeScannerRoundedIcon color="primary" />
+      <Stack
+        direction="row"
+        spacing={1}
+        alignItems="center"
+        sx={{ mb: 2, color: "primary.600", "& svg": { fontSize: 28 } }}
+      >
+        <ScanIcon />
         <Typography level="h3">{t("agent.scan.title")}</Typography>
       </Stack>
       <Typography level="body-sm" sx={{ color: "text.tertiary", mb: 2 }}>
@@ -140,7 +147,7 @@ export function AgentScanView() {
               compact
             />
           </Card>
-          <Button variant="solid" onClick={handleScanAgain} startDecorator={<QrCodeScannerRoundedIcon />}>
+          <Button variant="solid" onClick={handleScanAgain} startDecorator={<ScanIcon />}>
             {t("agent.scan.scanAgain")}
           </Button>
         </Stack>

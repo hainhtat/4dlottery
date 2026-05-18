@@ -85,7 +85,7 @@ export function AgentSettlementSummary({
 
   const { data, loading, error } = useAsyncData(fetchSettlement, [roundId, refreshKey]);
 
-  const rounds = data?.rounds ?? [];
+  const rounds = Array.isArray(data?.rounds) ? data.rounds : [];
   const current = useMemo((): SettlementCurrent | null => {
     if (!data?.current) return null;
     const c = data.current;
@@ -206,7 +206,7 @@ export function AgentSettlementSummary({
         {rounds.length > 0 && (
           <Select
             size="sm"
-            value={activeRoundId ?? ""}
+            value={activeRoundId ?? null}
             onChange={(_, v) => setRoundId(v || null)}
             sx={{ width: { xs: "100%", sm: "auto" }, minWidth: { sm: 180 } }}
           >

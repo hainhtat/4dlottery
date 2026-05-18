@@ -29,10 +29,11 @@ function interpolate(template: string, vars?: TranslateVars): string {
 }
 
 export function t(locale: Locale, key: string, vars?: TranslateVars): string {
+  const bundle = messages[locale] ?? messages[defaultLocale];
   const raw =
-    messages[locale][key] ?? messages.en[key] ?? (locale === "en" ? undefined : messages.my[key]);
+    bundle[key] ?? messages.en[key] ?? (locale === "en" ? undefined : messages.my[key]);
 
-  if (raw === undefined) {
+  if (raw === undefined || raw === null) {
     if (process.env.NODE_ENV === "development" && !warnedKeys.has(key)) {
       warnedKeys.add(key);
       console.warn(`[i18n] missing key: ${key}`);
@@ -40,7 +41,7 @@ export function t(locale: Locale, key: string, vars?: TranslateVars): string {
     return key;
   }
 
-  return interpolate(raw, vars);
+  return interpolate(String(raw), vars);
 }
 
 export { en, my };

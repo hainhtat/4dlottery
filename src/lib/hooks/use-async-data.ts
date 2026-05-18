@@ -1,6 +1,14 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+
+function toErrorMessage(e: unknown): string {
+  if (e instanceof Error) return e.message;
+  if (e && typeof e === "object" && "message" in e) {
+    return String((e as { message: string }).message);
+  }
+  return "Request failed";
+}
 
 export function useAsyncData<T>(
   fetcher: () => Promise<T>,
@@ -13,7 +21,12 @@ export function useAsyncData<T>(
   fetcherRef.current = fetcher;
   const isFirstLoad = useRef(true);
 
-  const refetch = useCallback(async (options?: { silent?: boolean }) => {
+  const depsKey = useMemo(
+    () => JSON.stringify(Array.isArray(deps) ? deps : []),
+    [deps]
+  );
+
+  const run = useCallback(async (options?: { silent?: boolean }) => {
     if (!options?.silent) setLoading(true);
     try {
       const result = await fetcherRef.current();
@@ -21,24 +34,24 @@ export function useAsyncData<T>(
       setError(null);
       return result;
     } catch (e) {
-      const message =
-        e instanceof Error
-          ? e.message
-          : e && typeof e === "object" && "message" in e
-            ? String((e as { message: string }).message)
-            : "Request failed";
+      const message = toErrorMessage(e);
       setError(message);
       throw e;
     } finally {
       if (!options?.silent) setLoading(false);
     }
-  }, deps);
+  }, []);
 
   useEffect(() => {
     const silent = !isFirstLoad.current;
     isFirstLoad.current = false;
-    refetch({ silent }).catch(() => {});
-  }, [refetch]);
+    run({ silent }).catch(() => {});
+  }, [depsKey, run]);
+
+  const refetch = useCallback(
+    (options?: { silent?: boolean }) => run(options),
+    [run]
+  );
 
   return { data, setData, loading, error, refetch };
 }

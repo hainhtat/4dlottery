@@ -430,7 +430,7 @@ export function SellTicketsForm() {
 
         <form onSubmit={handleSubmit}>
           <Stack spacing={2.5}>
-            {openRounds.length > 1 && (
+            {openRounds.length > 1 && activeRoundId && (
               <FormControl>
                 <FormLabel>{t("common.round")}</FormLabel>
                 <Select

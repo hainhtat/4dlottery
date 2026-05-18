@@ -2,8 +2,12 @@ import type { AgentNotificationPayload, AgentNotificationRow, AgentNotificationT
 
 type TranslateFn = (key: string, params?: Record<string, string>) => string;
 
-function payloadString(payload: AgentNotificationPayload | null, key: keyof AgentNotificationPayload): string {
-  const v = payload?.[key];
+function payloadString(
+  payload: AgentNotificationPayload | Record<string, unknown> | null,
+  key: keyof AgentNotificationPayload
+): string {
+  if (!payload || typeof payload !== "object" || Array.isArray(payload)) return "";
+  const v = payload[key];
   return typeof v === "string" ? v : "";
 }
 
