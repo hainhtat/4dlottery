@@ -62,16 +62,6 @@ export function useAgentLiveSync() {
         { event: "*", schema: "public", table: "rounds" },
         () => bump()
       );
-      channel.on(
-        "postgres_changes",
-        {
-          event: "INSERT",
-          schema: "public",
-          table: "agent_notifications",
-          filter: `agent_id=eq.${user.id}`,
-        },
-        () => bump()
-      );
       channel.subscribe();
     })();
 

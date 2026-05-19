@@ -29,6 +29,8 @@ export function formatAgentNotification(
       return t("agent.notifications.roundDrawn", { roundName, winningNumber });
     case "draw_winner":
       return t("agent.notifications.drawWinner", { roundName, winningNumber });
+    case "legacy":
+      break;
     default:
       break;
   }
@@ -52,6 +54,8 @@ export function notificationAlertColor(
       return "neutral";
     case "draw_winner":
       return "success";
+    case "legacy":
+      return "neutral";
     default:
       return "neutral";
   }

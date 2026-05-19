@@ -6,7 +6,7 @@
  */
 export const TICKET_WIDTH_PX = 420;
 /** Fits stacked layout in render-ticket-html with comfortable section gaps (5 detail rows). */
-export const TICKET_HEIGHT_PX = 608;
+export const TICKET_HEIGHT_PX = 640;
 
 /** Rendered QR on ticket; must fit inside {@link TICKET_HEIGHT_PX} with layout in render-ticket-html. */
 export const TICKET_QR_DISPLAY_PX = 104;

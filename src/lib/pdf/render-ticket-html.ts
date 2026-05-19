@@ -204,7 +204,7 @@ const TICKET_CSS = `
     position: relative;
     width: 100%;
     height: 100%;
-    padding: 22px 24px 20px;
+    padding: 24px 24px 22px;
     background: linear-gradient(135deg, #0B1325 0%, #050814 100%);
     border: 2px solid rgba(191, 149, 63, 0.45);
     outline: 1px solid rgba(191, 149, 63, 0.25);
@@ -236,7 +236,7 @@ const TICKET_CSS = `
     align-items: center;
     text-align: center;
     width: 100%;
-    margin-bottom: 14px;
+    margin-bottom: 16px;
     flex-shrink: 0;
   }
   .brand-title {
@@ -249,7 +249,7 @@ const TICKET_CSS = `
     white-space: nowrap;
     width: 100%;
     color: #f0e4b8;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
   }
   .official-line {
     font-family: 'Padauk', sans-serif;
@@ -257,7 +257,7 @@ const TICKET_CSS = `
     font-weight: 500;
     line-height: 1.45;
     max-width: 100%;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
     color: rgba(255, 255, 255, 0.92);
   }
   .official-id {
@@ -272,7 +272,7 @@ const TICKET_CSS = `
     font-weight: 700;
     color: #ffffff;
     letter-spacing: 0.04em;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
     max-width: 100%;
     word-break: break-word;
   }
@@ -318,13 +318,13 @@ const TICKET_CSS = `
   }
   .prize-box {
     border: 1px solid rgba(191, 149, 63, 0.65);
-    padding: 12px 10px 10px;
-    margin-bottom: 12px;
+    padding: 14px 12px 12px;
+    margin-bottom: 14px;
   }
   .number-box {
     border: 1px solid rgba(168, 176, 196, 0.5);
-    padding: 12px 10px 10px;
-    margin-bottom: 12px;
+    padding: 14px 12px 12px;
+    margin-bottom: 14px;
   }
   .box-label-gold {
     font-family: 'Geist Sans', 'Padauk', sans-serif;
@@ -340,7 +340,7 @@ const TICKET_CSS = `
     color: #ffffff;
     letter-spacing: 0.02em;
     line-height: 1;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
   }
   .prize-context {
     font-family: 'Padauk', 'Geist Sans', sans-serif;
@@ -363,7 +363,7 @@ const TICKET_CSS = `
     display: grid;
     grid-template-columns: auto 1fr;
     column-gap: 14px;
-    row-gap: 8px;
+    row-gap: 9px;
     width: 100%;
     margin-bottom: 0;
     flex-shrink: 0;
@@ -387,7 +387,7 @@ const TICKET_CSS = `
     word-break: break-word;
   }
   .ticket-footer {
-    margin-top: 18px;
+    margin-top: 22px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -396,7 +396,7 @@ const TICKET_CSS = `
   .qr-frame {
     padding: 1px;
     background: var(--metallic);
-    margin-bottom: 8px;
+    margin-bottom: 10px;
     flex-shrink: 0;
   }
   .qr-frame img {
