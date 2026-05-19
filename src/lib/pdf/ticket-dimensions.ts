@@ -5,8 +5,8 @@
  * multiple tickets on one page. Batch PDFs use N pages for N tickets.
  */
 export const TICKET_WIDTH_PX = 420;
-/** Fits stacked layout in render-ticket-html with ~24px bottom breathing room. */
-export const TICKET_HEIGHT_PX = 518;
+/** Fits stacked layout in render-ticket-html with comfortable section gaps (5 detail rows). */
+export const TICKET_HEIGHT_PX = 608;
 
 /** Rendered QR on ticket; must fit inside {@link TICKET_HEIGHT_PX} with layout in render-ticket-html. */
 export const TICKET_QR_DISPLAY_PX = 104;
